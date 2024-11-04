@@ -1,40 +1,36 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# Sign-In with Ethereum Web App
 
-## Getting Started
+This project is a simple Next.js web app that integrates Sign-In with Ethereum (SIWE) and allows the user to create and edit a profile.
 
-First, run the development server
+You can check it out from here: https://ethereum-signin-eight.vercel.app/
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Project Setup
+
+1. `git clone git@github.com:OmarBasem/ethereum-signin.git && cd ethereum-signin`
+2. Install packages: `yarn`
+3. Add and setup .env file: 
 ```
+DATABASE_URL="postgresql://[username]:[password]@localhost:5432/[db_name]?schema=public"
+SESSION_SECRET="ADD_SESSION_SECRET"
+```
+4. Start next server: `yarn dev` 
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Unit Tests
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+The project included unit tests using vitest, and component tests using React Testing Library.
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+Tests are under `src/__tests__` and can be run using `yarn test`.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+The `__tests__` directory follows the same structure of the `pages` directory.
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Design Choices
 
-## Learn More
+ - Next.js: a serverless architecture is sufficient for the requirements of this project. Next.js and React are used on the frontend
+ with no backend. Pages router was used over app router as it good enough for this simple project.
+ - Prisma: provides a type-safe and easy to use ORM for interacting with the database in TypeScript.
+ - Ethers: needed to interact with an Ethereum wallet in the browser extension.
+ - Iron-Session: for secure and stateless session management with cookies.
 
-To learn more about Next.js, take a look at the following resources:
+## Deployment
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+The project is deployed on Vercel, and the database is hosted on Supabase.
