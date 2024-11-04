@@ -7,13 +7,14 @@ You can check it out from here: https://ethereum-signin-eight.vercel.app/
 ## Project Setup
 
 1. `git clone git@github.com:OmarBasem/ethereum-signin.git && cd ethereum-signin`
-2. Install packages: `yarn`
-3. Add and setup .env file: 
+2. Add and setup .env file: 
 ```
 DATABASE_URL="postgresql://[username]:[password]@localhost:5432/[db_name]?schema=public"
 SESSION_SECRET="ADD_SESSION_SECRET"
 ```
-4. Start next server: `yarn dev` 
+3. Install packages: `yarn`
+4. Run DB migrations: `npx prisma migrate dev`
+5. Start next server: `yarn dev` 
 
 ## Unit Tests
 
