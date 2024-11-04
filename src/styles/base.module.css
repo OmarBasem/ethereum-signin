@@ -1,0 +1,66 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 50%;
+}
+
+.userInfo {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.userInfo p {
+    margin: 10px 0;
+    color: #555;
+}
+
+.button {
+    padding: 10px;
+    margin: 10px 5px;
+    background-color: #0070f3;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 180px;
+    font-weight: bold;
+}
+
+.button:hover {
+    background-color: #005bb5;
+}
+
+.buttonSecondary {
+    background-color: #f44336;
+}
+
+.buttonSecondary:hover {
+    background-color: #d32f2f;
+}
+
+.loading,
+.error {
+    color: #888;
+    font-size: 1.2rem;
+    margin-top: 20px;
+}
+
+.errorMessage {
+    color: red;
+    margin-bottom: 10px;
+}
+
+.successMessage {
+    color: green;
+    margin-bottom: 10px;
+}
