@@ -1,12 +1,7 @@
 import { vi } from 'vitest';
 import { generateNonce } from 'siwe';
-import type { NextApiRequest, NextApiResponse } from 'next';
 import handler from '@/pages/api/auth/nonce';
-
-const mockSession = {
-    nonce: '',
-    save: vi.fn().mockResolvedValue(null),
-};
+import {mockRequestResponse, mockSession} from "../../__resources__";
 
 vi.mock('iron-session', () => ({
     getIronSession: vi.fn(() => mockSession),
@@ -15,24 +10,6 @@ vi.mock('iron-session', () => ({
 vi.mock('siwe', () => ({
     generateNonce: vi.fn(() => 'mock-nonce'),
 }));
-
-const mockRequestResponse = () => {
-    const req = {
-        method: 'GET',
-    } as Partial<NextApiRequest>;
-
-    const res = {
-        status: vi.fn().mockReturnThis(),
-        json: vi.fn().mockReturnThis(),
-    } as Partial<NextApiResponse>;
-
-    return { req: req as NextApiRequest, res: res as NextApiResponse };
-};
-
-beforeEach(() => {
-    vi.clearAllMocks();
-    mockSession.nonce = '';
-});
 
 describe('GET /api/auth/nonce', () => {
     it('should return 405 if method is not GET', async () => {

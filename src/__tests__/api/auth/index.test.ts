@@ -1,40 +1,26 @@
 import {vi} from 'vitest';
 import handler from '@/pages/api/auth';
-import type {NextApiRequest, NextApiResponse} from 'next';
+import {mockRequestResponse, mockSession} from "../../__resources__";
+import {PrismaClient} from "@prisma/client";
 
-const mockSession = {
-    siwe: {address: '0x36B12dD15f681a5d6faED0792a924e42cA3023C5'},
-    save: vi.fn().mockResolvedValue(null),
-};
+const prisma = new PrismaClient();
 
 vi.mock('iron-session', () => ({
     getIronSession: vi.fn(() => mockSession),
 }));
 
-
-const mockRequestResponse = () => {
-    const req = {
-        method: 'GET',
-    } as Partial<NextApiRequest>;
-
-    const res = {
-        status: vi.fn().mockReturnThis(),
-        json: vi.fn().mockReturnThis(),
-        setHeader: vi.fn().mockReturnThis(),
-    } as Partial<NextApiResponse>;
-
-    return {req: req as NextApiRequest, res: res as NextApiResponse};
-};
-
-beforeEach(() => {
-    vi.clearAllMocks();
-    mockSession.siwe = {address: '0x36B12dD15f681a5d6faED0792a924e42cA3023C5'};
-});
-
-describe('GET /api/user', () => {
-    it('should return 405 if method is not GET', async () => {
+describe('GET /api/auth', () => {
+    it('should return 200', async () => {
+        const mockUser = {id: '123', ethAddress: '0xMockAddress'};
+        prisma.user.findUnique = vi.fn().mockResolvedValue(mockUser);
         const {req, res} = mockRequestResponse();
-        req.method = 'POST';
+
+        await handler(req, res);
+
+        expect(res.status).toHaveBeenCalledWith(200);
+    });
+    it('should return 405 if method is not GET', async () => {
+        const {req, res} = mockRequestResponse('POST');
 
         await handler(req, res);
 

@@ -8,8 +8,10 @@ import type {SessionData} from "@/types/session-data";
 const prisma = new PrismaClient();
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+    if (req.method !== 'POST') {
+        return res.setHeader('Allow', ['POST']).status(405).json({ error: 'Method Not Allowed' });
+    }
     const { message, signature } = req.body;
-
     try {
         const session = await getIronSession<SessionData>(req, res, sessionOptions);
         if (!session.nonce) {

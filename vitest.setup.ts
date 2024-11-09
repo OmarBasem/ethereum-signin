@@ -15,3 +15,12 @@ vi.mock('next/router', () => ({
         back: vi.fn()
     }),
 }));
+
+vi.mock('@prisma/client', () => {
+    const mockPrisma = {
+        user: {
+            findUnique: vi.fn(),
+        },
+    };
+    return {PrismaClient: vi.fn(() => mockPrisma)};
+});

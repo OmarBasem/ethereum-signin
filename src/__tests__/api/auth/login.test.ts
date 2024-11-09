@@ -1,44 +1,22 @@
 import { vi } from 'vitest';
 import { SiweMessage } from 'siwe';
-import type { NextApiRequest, NextApiResponse } from 'next';
 import handler from '@/pages/api/auth/login';
 import { PrismaClient } from '@prisma/client';
+import {mockRequestResponse, mockSession} from "../../__resources__";
 
 const prisma = new PrismaClient();
 
 const mockVerify = vi.fn();
 SiweMessage.prototype.verify = mockVerify;
 
-const mockSession = {
-    nonce: 'sample-nonce',
-    siwe: null,
-    save: vi.fn().mockResolvedValue(null),
-};
-
 vi.mock('iron-session', () => ({
     getIronSession: vi.fn(() => mockSession),
 }));
-
-const mockRequestResponse = () => {
-    const req = {
-        method: 'POST',
-        body: {},
-    } as Partial<NextApiRequest>;
-
-    const res = {
-        status: vi.fn().mockReturnThis(),
-        json: vi.fn().mockReturnThis(),
-        setHeader: vi.fn(),
-    } as Partial<NextApiResponse>;
-
-    return { req: req as NextApiRequest, res: res as NextApiResponse };
-};
 
 const createSiweMessage = (address: string, statement: string) => {
     const scheme = 'http';
     const domain = 'localhost:3000';
     const origin = 'http://localhost:3000';
-
     const message = new SiweMessage({
         scheme,
         domain,
@@ -48,14 +26,11 @@ const createSiweMessage = (address: string, statement: string) => {
         version: '1',
         chainId: 1,
     });
-
     return message.prepareMessage();
 };
 
 beforeEach(() => {
-    vi.clearAllMocks();
-    mockSession.nonce = 'sample-nonce';
-    mockSession.siwe = null;
+    mockSession.nonce = 'mock-nonce';
 });
 
 describe('POST /api/auth/login', () => {
@@ -69,7 +44,7 @@ describe('POST /api/auth/login', () => {
 
         prisma.user.findUnique = vi.fn().mockResolvedValue({ ethAddress: address });
 
-        const { req, res } = mockRequestResponse();
+        const { req, res } = mockRequestResponse('POST');
         req.body = {
             message,
             signature: 'valid-signature',
@@ -84,7 +59,7 @@ describe('POST /api/auth/login', () => {
     it('should return 422 if nonce is not found in session', async () => {
         mockSession.nonce = '';
 
-        const { req, res } = mockRequestResponse();
+        const { req, res } = mockRequestResponse('POST');
         req.body = {
             message: createSiweMessage('0x36B12dD15f681a5d6faED0792a924e42cA3023C3', 'Sign in with Ethereum'),
             signature: 'valid-signature',
@@ -101,7 +76,7 @@ describe('POST /api/auth/login', () => {
     it('should return 500 on server error', async () => {
         mockVerify.mockRejectedValue('Mocked rejected value');
 
-        const { req, res } = mockRequestResponse();
+        const { req, res } = mockRequestResponse('POST');
         req.body = {
             message: createSiweMessage('0x36B12dD15f681a5d6faED0792a924e42cA3023C3', 'Error message'),
             signature: 'error-signature',
