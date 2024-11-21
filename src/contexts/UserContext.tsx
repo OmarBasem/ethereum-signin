@@ -19,7 +19,8 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({children}
             const response = await fetch('/api/auth');
             const userData = response.ok ? await response.json() : null;
             setUser(userData);
-            router.push(userData ? '/profile' : '/');
+            if (!userData) router.push('/')
+            else if (router.pathname === '/') router.push('/profile');
         } catch (error) {
             console.error("Failed to fetch user:", error);
             setUser(null);

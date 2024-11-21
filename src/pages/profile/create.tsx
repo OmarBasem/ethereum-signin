@@ -2,6 +2,7 @@ import {useState, useCallback} from 'react';
 import {useRouter} from 'next/router';
 import styles from '@/styles/base.module.css';
 import {useUser} from '@/contexts/UserContext';
+import {bioCharLimit, usernameCharLimit} from "@/lib/constants";
 
 export default function CreateProfile() {
     const router = useRouter();
@@ -45,7 +46,7 @@ export default function CreateProfile() {
         } finally {
             setLoading(false);
         }
-    }, [form, ethAddress, setUser, router]);
+    }, [form, ethAddress]);
 
     return (
         <div className={styles.container}>
@@ -65,6 +66,7 @@ export default function CreateProfile() {
                         placeholder="Username"
                         required
                         id="username"
+                        maxLength={usernameCharLimit}
                     />
                 </div>
                 <div>
@@ -75,6 +77,7 @@ export default function CreateProfile() {
                         onChange={handleChange}
                         placeholder="Tell us something about yourself"
                         id="bio"
+                        maxLength={bioCharLimit}
                     />
                 </div>
                 {error && <p role="alert" className={styles.errorMessage}>{error}</p>}

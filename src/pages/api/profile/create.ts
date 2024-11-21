@@ -1,28 +1,30 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import { PrismaClient, Prisma } from '@prisma/client';
-import { getIronSession } from 'iron-session';
-import { sessionOptions } from '@/lib/session';
-import {SessionData} from "@/types/session-data";
+import {NextApiRequest, NextApiResponse} from 'next';
+import {PrismaClient, Prisma} from '@prisma/client';
+import {withAuthentication, withMethod} from "@/lib/middleware";
+import {bioCharLimit, ethAddressCharLimit, usernameCharLimit} from "@/lib/constants";
 
 const prisma = new PrismaClient();
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    if (req.method !== 'POST') {
-        return res.setHeader('Allow', ['POST']).status(405).json({ error: 'Method Not Allowed' });
-    }
-    const session = await getIronSession<SessionData>(req, res, sessionOptions);
-    if (!session.siwe || !session.siwe.address) {
-        return res.status(401).json({error: 'Unauthorized. Please log in.'});
-    }
-    const { username, bio } = req.body;
-    const ethAddress = session.siwe.address;
+async function handler(req: NextApiRequest, res: NextApiResponse) {
+    const {username, bio} = req.body;
+    const ethAddress = req.session.siwe.address;
     if (!username) {
         return res.status(400).json({error: 'Username is required'});
     }
     try {
-        const existingUser = await prisma.user.findUnique({ where: { username } });
+        const existingUser = await prisma.user.findUnique({where: {username}});
         if (existingUser) {
-            return res.status(409).json({ error: 'Username is already in use' });
+            return res.status(409).json({error: 'Username is already in use'});
+        }
+        if (ethAddress.length > ethAddressCharLimit || username.length > usernameCharLimit || bio.length > bioCharLimit) {
+            return res.status(400).json({
+                error: 'Input validation failed',
+                details: {
+                    ethAddress: ethAddress.length > ethAddressCharLimit ? `Maximum length is ${ethAddressCharLimit}` : undefined,
+                    username: username.length > usernameCharLimit ? `Maximum length is ${usernameCharLimit}` : undefined,
+                    bio: bio && bio.length > bioCharLimit ? `Maximum length is ${bioCharLimit}` : undefined,
+                },
+            });
         }
         const newUser = await prisma.user.create({
             data: {
@@ -36,9 +38,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         console.error('Error creating user:', error);
         if (error instanceof Prisma.PrismaClientKnownRequestError) {
             if (error.code === 'P2002' && (error.meta?.target as string[]).includes('ethAddress')) {
-                return res.status(409).json({ error: 'ethAddress already exists' });
+                return res.status(409).json({error: 'ethAddress already exists'});
             }
         }
-        res.status(500).json({ error: 'An error occurred while creating the user' });
+        res.status(500).json({error: 'An error occurred while creating the user'});
     }
 }
+
+export default withMethod('POST', withAuthentication(handler));
+

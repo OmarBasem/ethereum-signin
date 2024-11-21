@@ -31,6 +31,9 @@ export default function Profile() {
         }
     }, [setUser, router]);
 
+    const goToCreate = () => router.push('/posts/create');
+    const goToFeed = () => router.push('/posts');
+
     if (loading) return <p>Loading...</p>;
 
     return (
@@ -42,6 +45,8 @@ export default function Profile() {
                     <p><strong>Ethereum Address:</strong> {user.ethAddress}</p>
                     <p><strong>Bio:</strong> {user.bio || 'No bio available'}</p>
                     <p><strong>Joined:</strong> {new Date(user.createdAt).toLocaleDateString()}</p>
+                    <button onClick={goToCreate} className={styles.button}>Create Post</button>
+                    <button onClick={goToFeed} className={styles.button}>View Posts</button>
                     <button onClick={handleEditProfile} className={styles.button}>Edit Profile</button>
                     <button onClick={handleLogout} className={`${styles.button} ${styles.buttonSecondary}`}>
                         Logout

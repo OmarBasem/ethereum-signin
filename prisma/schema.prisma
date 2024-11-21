@@ -16,8 +16,17 @@ datasource db {
 
 model User {
   id         String   @id @default(uuid())
-  ethAddress String   @unique
-  username   String   @unique
-  bio        String?
+  ethAddress String   @unique @db.VarChar(42)
+  username   String   @unique @db.VarChar(20)
+  bio        String?  @db.VarChar(255)
   createdAt  DateTime @default(now())
+  posts      Post[]
+}
+
+model Post {
+  id             String   @id @default(uuid())
+  content        String   @db.VarChar(255)
+  createdAt      DateTime @default(now())
+  userEthAddress String   @db.VarChar(42)
+  user           User     @relation(fields: [userEthAddress], references: [ethAddress])
 }

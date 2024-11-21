@@ -4,13 +4,11 @@ import { PrismaClient } from '@prisma/client';
 import { getIronSession } from 'iron-session';
 import { sessionOptions } from '@/lib/session';
 import type {SessionData} from "@/types/session-data";
+import {withMethod} from "@/lib/middleware";
 
 const prisma = new PrismaClient();
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    if (req.method !== 'POST') {
-        return res.setHeader('Allow', ['POST']).status(405).json({ error: 'Method Not Allowed' });
-    }
+async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { message, signature } = req.body;
     try {
         const session = await getIronSession<SessionData>(req, res, sessionOptions);
@@ -34,3 +32,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         res.status(500).json({ error: 'Server error' });
     }
 }
+
+export default withMethod('POST', handler);
+

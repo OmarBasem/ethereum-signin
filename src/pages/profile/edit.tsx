@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import styles from '@/styles/base.module.css';
 import { useUser } from '@/contexts/UserContext';
 import { User } from "@/types/user";
+import {bioCharLimit, usernameCharLimit} from "@/lib/constants";
 
 export default function EditProfile() {
     const router = useRouter();
@@ -71,6 +72,7 @@ export default function EditProfile() {
                         placeholder="Username"
                         required
                         id="username"
+                        maxLength={usernameCharLimit}
                     />
                 </div>
                 <div>
@@ -81,6 +83,7 @@ export default function EditProfile() {
                         onChange={handleChange}
                         placeholder="Tell us something about yourself"
                         id="bio"
+                        maxLength={bioCharLimit}
                     />
                 </div>
                 <div>
