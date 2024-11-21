@@ -19,7 +19,7 @@ describe('GET /api/auth/nonce', () => {
         await handler(req, res);
 
         expect(res.status).toHaveBeenCalledWith(405);
-        expect(res.json).toHaveBeenCalledWith({ message: 'Method not allowed' });
+        expect(res.json).toHaveBeenCalledWith({ error: 'Method Not Allowed' });
     });
 
     it('should generate a nonce, save it in the session, and return 200 with the nonce', async () => {

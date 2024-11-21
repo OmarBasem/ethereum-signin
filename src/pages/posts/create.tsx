@@ -29,9 +29,6 @@ export default function CreatePost() {
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({content: trimmedContent}),
             });
-
-            console.log('response:', response);
-
             if (response.ok) {
                 router.push('/posts');
             } else {

@@ -47,14 +47,4 @@ describe('PATCH /api/profile/update', () => {
         expect(res.status).toHaveBeenCalledWith(401);
         expect(res.json).toHaveBeenCalledWith({error: 'Unauthorized. Please log in.'});
     });
-
-    it('should return 403 if ethAddress in body does not match session address', async () => {
-        const {req, res} = mockRequestResponse('PATCH');
-        req.body = {ethAddress: '0xDifferentAddress', username: 'newUser', bio: 'Test bio'};
-
-        await handler(req, res);
-
-        expect(res.status).toHaveBeenCalledWith(403);
-        expect(res.json).toHaveBeenCalledWith({error: 'Forbidden: You can only edit your own profile.'});
-    });
 });

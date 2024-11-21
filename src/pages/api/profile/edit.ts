@@ -1,7 +1,7 @@
 import {NextApiRequest, NextApiResponse} from 'next';
 import {PrismaClient} from '@prisma/client';
 import {withAuthentication, withMethod} from "@/lib/middleware";
-import {bioCharLimit, ethAddressCharLimit, usernameCharLimit} from "@/lib/constants";
+import {bioCharLimit, usernameCharLimit} from "@/lib/constants";
 
 const prisma = new PrismaClient();
 

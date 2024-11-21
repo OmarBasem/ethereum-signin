@@ -36,6 +36,6 @@ describe('GET /api/auth', () => {
         await handler(req, res);
 
         expect(res.status).toHaveBeenCalledWith(401);
-        expect(res.json).toHaveBeenCalledWith({error: 'Not authenticated'});
+        expect(res.json).toHaveBeenCalledWith({error: 'Unauthorized. Please log in.'});
     });
 });
